@@ -24,7 +24,9 @@ Button.defaultProps = {
 const styles = StyleSheet.create({
     button: {
         height: 50,
-        width: 150,
+        width: 120,
+        marginStart: 10,
+        marginEnd: 10,
         alignItems: "center",
         justifyContent: "center",
     },
