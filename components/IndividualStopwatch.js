@@ -3,8 +3,8 @@ import {
     StyleSheet,
     View,
     Text,
-    TouchableOpacity,
 } from 'react-native';
+import Button from './Button';
 
 const IndividualStopWatch = ({ stopwatch }) => {
 
@@ -83,21 +83,11 @@ const IndividualStopWatch = ({ stopwatch }) => {
     const renderButton = () => {
         if (running) {
             return (
-                <TouchableOpacity
-                    style={[styles.button, styles.buttonRed]}
-                    onPress={stop}
-                >
-                    <Text style={styles.buttonText}>STOP</Text>
-                </TouchableOpacity>
+                <Button text="STOP" color="#cc3333" onPress={stop}/>
             );
         } else {
             return (
-                <TouchableOpacity
-                    style={[styles.button, styles.buttonGreen]}
-                    onPress={start}
-                >
-                    <Text style={styles.buttonText}>START</Text>
-                </TouchableOpacity>
+                <Button text="START" color="#33cc33" onPress={start}/>
             );
         }
     }
@@ -136,22 +126,6 @@ const styles = StyleSheet.create({
     },
     elapsedTimeUnit: {
         color: "#00ff00",
-        fontSize: 25,
-    },
-    button: {
-        width: 150,
-        height: 50,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonGreen: {
-        backgroundColor: "#33cc33",
-    },
-    buttonRed: {
-        backgroundColor: "#cc3333",
-    },
-    buttonText: {
-        color: "#ffffff",
         fontSize: 25,
     },
 });
