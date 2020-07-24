@@ -5,8 +5,9 @@ import {
     Text,
 } from 'react-native';
 import Button from './Button';
+import PopupMenu from './PopupMenu';
 
-const IndividualStopWatch = ({ stopwatch }) => {
+const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
 
     const [elapsedTime, setElapsedTime] = useState(0);
     const [running, setRunning] = useState(false);
@@ -26,6 +27,12 @@ const IndividualStopWatch = ({ stopwatch }) => {
         clearInterval(savedInterval);
     };
 
+    const reset = () => {
+        setRunning(false);
+        setElapsedTime(0);
+        clearInterval(savedInterval);
+    }
+    
     const pad = (number, size) => {
         let string = number + "";
         while (string.length < size) {
@@ -83,18 +90,26 @@ const IndividualStopWatch = ({ stopwatch }) => {
     const renderButton = () => {
         if (running) {
             return (
-                <Button text="STOP" color="#cc3333" onPress={stop}/>
+                <Button text="STOP" color="#cc3333" onPress={stop} />
             );
         } else {
             return (
-                <Button text="START" color="#33cc33" onPress={start}/>
+                <Button text="START" color="#33cc33" onPress={start} />
             );
         }
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.stopwatchTitle}>{stopwatch.name}</Text>
+            <View style={styles.topContainer}>
+                <Text style={styles.stopwatchTitle}>{stopwatch.name}</Text>
+                <PopupMenu
+                    stopwatch={stopwatch}
+                    onPressReset={reset}
+                    onPressRename={onPressRename}
+                    onPressDelete={onPressDelete}
+                    />
+            </View>
             {renderTime()}
             {renderButton()}
         </View>
@@ -106,7 +121,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#333333",
         padding: 10,
         marginTop: 6,
+    },
+    topContainer: {
+        flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between"
     },
     stopwatchTitle: {
         color: "#ffffff",
@@ -117,6 +136,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-end",
+        justifyContent: "center",
         paddingTop: 15,
         paddingBottom: 15,
     },
