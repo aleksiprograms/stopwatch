@@ -15,10 +15,13 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
 
     const start = () => {
         setRunning(true);
-        let startTime = Date.now();
+        let lastTimeFromIntervalEnd = Date.now();
         let interval = setInterval(() => {
-            setElapsedTime(elapsedTime + Date.now() - startTime);
-        }, 50);
+            let timeNow = Date.now();
+            let delta = timeNow - lastTimeFromIntervalEnd;
+            setElapsedTime(prevItem => prevItem + delta);
+            lastTimeFromIntervalEnd = timeNow;
+        }, 100);
         setSavedInterval(interval);
     };
 
@@ -33,12 +36,14 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
         clearInterval(savedInterval);
     }
     
-    const pad = (number, size) => {
-        let string = number + "";
-        while (string.length < size) {
+    const getHundredthSeconds = (milliSeconds) => {
+        let rounded = Math.round(milliSeconds / 100) * 100;
+        // Add leading zeroes if needed
+        let string = rounded + "";
+        while (string.length < 3) {
             string = "0" + string;
         }
-        return string;
+        return string[0];
     }
 
     const renderTime = () => {
@@ -53,7 +58,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
             <View style={styles.elapsedTimeContainer}>
                 {formatedTime.days != 0 &&
                     <Text style={styles.elapsedTimeValue}>
-                        {pad(formatedTime.days, 2)}
+                        {formatedTime.days}
                     </Text>
                 }
                 {formatedTime.days != 0 &&
@@ -61,7 +66,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
                 }
                 {formatedTime.hours != 0 &&
                     <Text style={styles.elapsedTimeValue}>
-                        {pad(formatedTime.hours, 2)}
+                        {formatedTime.hours}
                     </Text>
                 }
                 {formatedTime.hours != 0 &&
@@ -69,18 +74,18 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
                 }
                 {formatedTime.minutes != 0 &&
                     <Text style={styles.elapsedTimeValue}>
-                        {pad(formatedTime.minutes, 1)}
+                        {formatedTime.minutes}
                     </Text>
                 }
                 {formatedTime.minutes != 0 &&
                     <Text style={styles.elapsedTimeUnit}> m  </Text>
                 }
                 <Text style={styles.elapsedTimeValue}>
-                    {pad(formatedTime.seconds, 2)}
+                    {formatedTime.seconds}
                 </Text>
                 <Text style={styles.elapsedTimeValue}>.</Text>
                 <Text style={styles.elapsedTimeValue}>
-                    {pad(formatedTime.milliSeconds, 3)}
+                    {getHundredthSeconds(formatedTime.milliSeconds)}
                 </Text>
                 <Text style={styles.elapsedTimeUnit}> s</Text>
             </View>
