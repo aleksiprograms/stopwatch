@@ -1,23 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     View,
     Text,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Button from './Button';
 import PopupMenu from './PopupMenu';
 
-const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
+const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
 
     const [elapsedTime, setElapsedTime] = useState(0);
     const [running, setRunning] = useState(false);
     const [savedInterval, setSavedInterval] = useState();
 
-    const start = () => {
+    useEffect(() => {
+        if (stopwatch.running) {
+            let allreadyElapsedTime = stopwatch.savedElapsedTime
+                + (Date.now() - stopwatch.lastRunStartTime)
+            setElapsedTime(allreadyElapsedTime);
+            start(allreadyElapsedTime);
+        } else {
+            setElapsedTime(stopwatch.savedElapsedTime);
+        }
+    }, []);
+
+    const start = (allreadyElapsedTime) => {
         setRunning(true);
-        let lastTimeFromIntervalEnd = Date.now();
+        let timeNow = Date.now();
+        let dataToSave = {
+            id: stopwatch.id,
+            name: stopwatch.name,
+            running: true,
+            savedElapsedTime: allreadyElapsedTime,
+            lastRunStartTime: timeNow
+        };
+        saveData(dataToSave);
+        let lastTimeFromIntervalEnd = timeNow;
         let interval = setInterval(() => {
-            let timeNow = Date.now();
+            timeNow = Date.now();
             let delta = timeNow - lastTimeFromIntervalEnd;
             setElapsedTime(prevItem => prevItem + delta);
             lastTimeFromIntervalEnd = timeNow;
@@ -28,14 +49,37 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
     const stop = () => {
         setRunning(false);
         clearInterval(savedInterval);
+        let dataToSave = {
+            id: stopwatch.id,
+            name: stopwatch.name,
+            running: false,
+            savedElapsedTime: elapsedTime,
+            lastRunStartTime: 0
+        };
+        saveData(dataToSave);
     };
 
     const reset = () => {
         setRunning(false);
         setElapsedTime(0);
         clearInterval(savedInterval);
+        let dataToSave = {
+            id: stopwatch.id,
+            name: stopwatch.name,
+            running: false,
+            savedElapsedTime: 0,
+            lastRunStartTime: 0
+        };
+        saveData(dataToSave);
     }
-    
+
+    const saveData = async (value) => {
+        try {
+            const jsonValue = JSON.stringify(value);
+            await AsyncStorage.setItem("id" + stopwatch.id, jsonValue);
+        } catch (e) { }
+    }
+
     const getHundredthSeconds = (milliSeconds) => {
         let rounded = Math.round(milliSeconds / 100) * 100;
         // Add leading zeroes if needed
@@ -99,7 +143,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
             );
         } else {
             return (
-                <Button text="START" color="#33cc33" onPress={start} />
+                <Button text="START" color="#33cc33" onPress={() => start(elapsedTime)} />
             );
         }
     }
@@ -113,7 +157,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete}) => {
                     onPressReset={reset}
                     onPressRename={onPressRename}
                     onPressDelete={onPressDelete}
-                    />
+                />
             </View>
             {renderTime()}
             {renderButton()}
