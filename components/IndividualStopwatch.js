@@ -143,7 +143,10 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
             );
         } else {
             return (
-                <Button text="START" color="#33cc33" onPress={() => start(elapsedTime)} />
+                <Button
+                    text={elapsedTime === 0 ? "START" : "RESUME"}
+                    color="#33cc33"
+                    onPress={() => start(elapsedTime)} />
             );
         }
     }
