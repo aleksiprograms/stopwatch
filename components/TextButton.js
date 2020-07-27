@@ -5,10 +5,14 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-const Button = ({ text, color, onPress }) => {
+const TextButton = ({ text, color, wide, onPress }) => {
     return (
         <TouchableOpacity
-            style={[styles.button, { backgroundColor: color }]}
+            style={[
+                styles.button,
+                { backgroundColor: color, },
+                wide ? styles.wideStyle : styles.notWideStyle,
+            ]}
             onPress={() => onPress()}
         >
             <Text style={styles.buttonText}>{text}</Text>
@@ -16,20 +20,27 @@ const Button = ({ text, color, onPress }) => {
     );
 };
 
-Button.defaultProps = {
+TextButton.defaultProps = {
     text: "BUTTON",
     color: "#000000",
-}
+    wide: false,
+};
 
 const styles = StyleSheet.create({
     button: {
-        height: 50,
-        width: 120,
         marginStart: 10,
         marginEnd: 10,
         alignItems: "center",
         justifyContent: "center",
         alignSelf: "center",
+    },
+    wideStyle: {
+        height: 60,
+        width: 300,
+    },
+    notWideStyle: {
+        height: 50,
+        width: 120,
     },
     buttonText: {
         color: "#ffffff",
@@ -37,4 +48,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Button;
+export default TextButton;

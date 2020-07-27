@@ -3,25 +3,20 @@ import {
     StyleSheet,
     View,
     FlatList,
-    TouchableOpacity,
-    Text,
 } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from './components/Header';
-import IndividualStopWatch from './components/IndividualStopwatch';
-import CreateStopwatchModal from './components/CreateStopwatchModal';
-import RenameStopwatchModal from './components/RenameStopwatchModal';
+import Stopwatch from './components/Stopwatch';
+import NamingModal from './components/NamingModal';
+import TextButton from './components/TextButton';
 
 const App = () => {
     const [stopwatches, setStopwatches] = useState([]);
-
     const [nextStopwatchId, setNextStopwatchId] = useState(2);
-
+    const [newStopwatch, setNewStopwatch] = useState({});
     const [stopwatchToEdit, setStopwatchToEdit] = useState({});
-
     const [showCreateStopwatchModal, setShowCreateStopwatchModal] = useState(false);
-
     const [showRenameStopwatchModal, setShowRenameStopwatchModal] = useState(false);
 
     useEffect(() => {
@@ -32,7 +27,7 @@ const App = () => {
 
     const loadStopwatches = async () => {
         try {
-            let keys = await AsyncStorage.getAllKeys();
+            const keys = await AsyncStorage.getAllKeys();
 
             // Remove nexStopwatchId key from keys
             const index = keys.indexOf("nextStopwatchId");
@@ -52,7 +47,7 @@ const App = () => {
                 }
             }
         } catch (exception) { }
-    }
+    };
 
     const createFirstStopwatch = () => {
         const stopwatch = {
@@ -60,13 +55,13 @@ const App = () => {
             name: "Stopwatch1",
             running: false,
             savedElapsedTime: 0,
-            lastRunStartTime: 0
+            lastRunStartTime: 0,
         };
         setStopwatches(prevItems => {
             return [...prevItems, stopwatch];
         });
         saveStopwatch(stopwatch);
-    }
+    };
 
     const loadNextStopwatchId = async () => {
         try {
@@ -80,23 +75,16 @@ const App = () => {
         } catch (exception) {
             setNextStopwatchId(2);
         }
-    }
+    };
 
     const saveNextStopwatchId = async (nextId) => {
         try {
             await AsyncStorage.setItem("nextStopwatchId", nextId + "");
             setNextStopwatchId(nextId);
         } catch (exception) { }
-    }
+    };
 
-    const createStopwatch = async (name) => {
-        const stopwatch = {
-            id: nextStopwatchId,
-            name: name,
-            running: false,
-            savedElapsedTime: 0,
-            lastRunStartTime: 0
-        };
+    const createStopwatch = async (stopwatch) => {
         try {
             const jsonValue = JSON.stringify(stopwatch);
             await AsyncStorage.setItem("id" + stopwatch.id, jsonValue);
@@ -114,19 +102,11 @@ const App = () => {
             setStopwatches(prevItems => {
                 return prevItems.filter(item => item.id != id);
             });
-        }
-        catch(exception) { }
+        } catch (exception) { }
     };
 
-    const renameStopwatch = async (id, newName) => {
-        let index = stopwatches.findIndex(item => item.id == id);
-        const stopwatch = {
-            id: stopwatches[index].id,
-            name: newName,
-            running: stopwatches[index].running,
-            savedElapsedTime: stopwatches[index].savedElapsedTime,
-            lastRunStartTime: stopwatches[index].lastRunStartTime
-        };
+    const renameStopwatch = async (stopwatch) => {
+        let index = stopwatches.findIndex(item => item.id == stopwatch.id);
         try {
             const jsonValue = JSON.stringify(stopwatch);
             await AsyncStorage.setItem("id" + stopwatch.id, jsonValue);
@@ -138,44 +118,62 @@ const App = () => {
         } catch (exception) { }
     };
 
-    const openRenameStopwatchModal = (oldStopwatch) => {
-        setStopwatchToEdit(oldStopwatch);
+    const openCreateStopwatchModal = () => {
+        const stopwatch = {
+            id: nextStopwatchId,
+            name: "Stopwatch" + nextStopwatchId,
+            running: false,
+            savedElapsedTime: 0,
+            lastRunStartTime: 0,
+        };
+        setNewStopwatch(stopwatch);
+        setShowCreateStopwatchModal(true);
+    };
+
+    const openRenameStopwatchModal = (stopwatch) => {
+        setStopwatchToEdit(stopwatch);
         setShowRenameStopwatchModal(true);
-    }
+    };
 
     return (
         <MenuProvider>
             <View style={styles.container}>
-                <CreateStopwatchModal
+                <NamingModal
                     visible={showCreateStopwatchModal}
-                    nextStopwatchId={nextStopwatchId}
-                    onPressCreate={createStopwatch}
-                    onPressCancel={() => setShowCreateStopwatchModal(false)}
+                    title="Create Stopwatch"
+                    stopwatchToEdit={newStopwatch}
+                    buttonTextPositive="CREATE"
+                    buttonTextNegative="CANCEL"
+                    onPressPositive={createStopwatch}
+                    onPressNegative={() => setShowCreateStopwatchModal(false)}
                 />
-                <RenameStopwatchModal
+                <NamingModal
                     visible={showRenameStopwatchModal}
+                    title="Rename Stopwatch"
                     stopwatchToEdit={stopwatchToEdit}
-                    onPressRename={renameStopwatch}
-                    onPressCancel={() => setShowRenameStopwatchModal(false)}
+                    buttonTextPositive="RENAME"
+                    buttonTextNegative="CANCEL"
+                    onPressPositive={renameStopwatch}
+                    onPressNegative={() => setShowRenameStopwatchModal(false)}
                 />
                 <Header title="Stopwatch" />
                 <FlatList
                     data={stopwatches}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) =>
-                        <IndividualStopWatch
+                        <Stopwatch
                             stopwatch={item}
                             onPressRename={openRenameStopwatchModal}
                             onPressDelete={deleteStopwatch}
                         />
                     }
                 />
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => setShowCreateStopwatchModal(true)}
-                >
-                    <Text style={styles.buttonText}>CREATE STOPWATCH</Text>
-                </TouchableOpacity>
+                <TextButton
+                    text="CREATE STOPWATCH"
+                    color="#ff8800"
+                    wide={true}
+                    onPress={openCreateStopwatchModal}
+                />
             </View>
         </MenuProvider>
     );
@@ -185,43 +183,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#111111",
-    },
-    appContainer: {
-    },
-    text: {
-        color: "#ffffff",
-    },
-    button: {
-        width: "auto",
-        height: 60,
-        marginTop: 6,
-        backgroundColor: "#ff8800",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttonText: {
-        color: "#ffffff",
-        fontSize: 25,
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: "#555555",
-        padding: 20,
-        alignItems: "center",
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center"
     },
 });
 

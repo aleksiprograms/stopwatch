@@ -5,10 +5,10 @@ import {
     Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import Button from './Button';
+import TextButton from './TextButton';
 import PopupMenu from './PopupMenu';
 
-const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
+const Stopwatch = ({ stopwatch, onPressRename, onPressDelete }) => {
 
     const [elapsedTime, setElapsedTime] = useState(0);
     const [running, setRunning] = useState(false);
@@ -16,24 +16,24 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
 
     useEffect(() => {
         if (stopwatch.running) {
-            let allreadyElapsedTime = stopwatch.savedElapsedTime
+            let alreadyElapsedTime = stopwatch.savedElapsedTime
                 + (Date.now() - stopwatch.lastRunStartTime)
-            setElapsedTime(allreadyElapsedTime);
-            start(allreadyElapsedTime);
+            setElapsedTime(alreadyElapsedTime);
+            start(alreadyElapsedTime);
         } else {
             setElapsedTime(stopwatch.savedElapsedTime);
         }
     }, []);
 
-    const start = (allreadyElapsedTime) => {
+    const start = (alreadyElapsedTime) => {
         setRunning(true);
         let timeNow = Date.now();
         let dataToSave = {
             id: stopwatch.id,
             name: stopwatch.name,
             running: true,
-            savedElapsedTime: allreadyElapsedTime,
-            lastRunStartTime: timeNow
+            savedElapsedTime: alreadyElapsedTime,
+            lastRunStartTime: timeNow,
         };
         saveData(dataToSave);
         let lastTimeFromIntervalEnd = timeNow;
@@ -54,7 +54,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
             name: stopwatch.name,
             running: false,
             savedElapsedTime: elapsedTime,
-            lastRunStartTime: 0
+            lastRunStartTime: 0,
         };
         saveData(dataToSave);
     };
@@ -68,17 +68,17 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
             name: stopwatch.name,
             running: false,
             savedElapsedTime: 0,
-            lastRunStartTime: 0
+            lastRunStartTime: 0,
         };
         saveData(dataToSave);
-    }
+    };
 
     const saveData = async (value) => {
         try {
             const jsonValue = JSON.stringify(value);
             await AsyncStorage.setItem("id" + stopwatch.id, jsonValue);
-        } catch (e) { }
-    }
+        } catch (exception) { }
+    };
 
     const getHundredthSeconds = (milliSeconds) => {
         let rounded = Math.round(milliSeconds / 100) * 100;
@@ -88,7 +88,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
             string = "0" + string;
         }
         return string[0];
-    }
+    };
 
     const renderTime = () => {
         let formatedTime = {
@@ -96,7 +96,7 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
             hours: Math.floor((elapsedTime / (1000 * 60 * 60)) % 24),
             minutes: Math.floor((elapsedTime / 1000 / 60) % 60),
             seconds: Math.floor((elapsedTime / 1000) % 60),
-            milliSeconds: elapsedTime % 1000
+            milliSeconds: elapsedTime % 1000,
         };
         return (
             <View style={styles.elapsedTimeContainer}>
@@ -134,22 +134,22 @@ const IndividualStopWatch = ({ stopwatch, onPressRename, onPressDelete }) => {
                 <Text style={styles.elapsedTimeUnit}> s</Text>
             </View>
         );
-    }
+    };
 
     const renderButton = () => {
         if (running) {
             return (
-                <Button text="STOP" color="#cc3333" onPress={stop} />
+                <TextButton text="STOP" color="#cc3333" onPress={stop} />
             );
         } else {
             return (
-                <Button
+                <TextButton
                     text={elapsedTime === 0 ? "START" : "RESUME"}
                     color="#33cc33"
                     onPress={() => start(elapsedTime)} />
             );
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     topContainer: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     stopwatchTitle: {
         color: "#ffffff",
@@ -202,4 +202,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default IndividualStopWatch;
+export default Stopwatch;

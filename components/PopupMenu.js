@@ -6,7 +6,7 @@ import {
     MenuTrigger,
 } from 'react-native-popup-menu';
 
-const PopupMenu = ({stopwatch, onPressReset, onPressRename, onPressDelete}) => {
+const PopupMenu = ({ stopwatch, onPressReset, onPressRename, onPressDelete }) => {
     return (
         <Menu>
             <MenuTrigger text="EDIT" customStyles={triggerStyles} />

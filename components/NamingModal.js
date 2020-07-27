@@ -6,17 +6,28 @@ import {
     Modal,
     TextInput,
 } from 'react-native';
-import Button from './Button';
+import TextButton from './TextButton';
 
-const RenameStopwatchModal = ({ visible, stopwatchToEdit, onPressRename, onPressCancel }) => {
+const NamingModal = ({
+    visible,
+    title,
+    stopwatchToEdit,
+    buttonTextPositive,
+    buttonTextNegative,
+    onPressPositive,
+    onPressNegative }) => {
 
-    const [newName, setNewName] = useState("");
+    const [stopwatch, setStopwatch] = useState({});
 
     useEffect(() => {
-        setNewName(stopwatchToEdit.name);
+        setStopwatch(stopwatchToEdit);
     }, [stopwatchToEdit]);
 
-    const onNameChange = (textValue) => setNewName(textValue);
+    const onNameChange = (textValue) => {
+        let tmpStopwatch = stopwatch;
+        tmpStopwatch.name = textValue;
+        setStopwatch(tmpStopwatch);
+    };
 
     return (
         <Modal
@@ -26,7 +37,7 @@ const RenameStopwatchModal = ({ visible, stopwatchToEdit, onPressRename, onPress
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.title}>Rename Stopwatch</Text>
+                    <Text style={styles.title}>{title}</Text>
                     <TextInput
                         style={styles.textinput}
                         maxLength={15}
@@ -34,15 +45,15 @@ const RenameStopwatchModal = ({ visible, stopwatchToEdit, onPressRename, onPress
                         onChangeText={onNameChange}
                     />
                     <View style={styles.buttonContainer}>
-                        <Button
-                            text="CANCEL"
+                        <TextButton
+                            text={buttonTextNegative}
                             color="#cc3333"
-                            onPress={() => onPressCancel()}
+                            onPress={() => onPressNegative()}
                         />
-                        <Button
-                            text="RENAME"
+                        <TextButton
+                            text={buttonTextPositive}
                             color="#33cc33"
-                            onPress={() => onPressRename(stopwatchToEdit.id, newName)}
+                            onPress={() => onPressPositive(stopwatch)}
                         />
                     </View>
                 </View>
@@ -65,12 +76,12 @@ const styles = StyleSheet.create({
     textStyle: {
         color: "white",
         fontWeight: "bold",
-        alignItems: "center"
+        alignItems: "center",
     },
     title: {
         alignSelf: "flex-start",
         fontSize: 25,
-        color: "#ffffff"
+        color: "#ffffff",
     },
     textinput: {
         marginTop: 20,
@@ -87,4 +98,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RenameStopwatchModal;
+export default NamingModal;
