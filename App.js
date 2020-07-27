@@ -25,6 +25,12 @@ const App = () => {
         loadNextStopwatchId();
     }, []);
 
+    const flatListRef = React.useRef();
+
+    const flatListToTop = () => {
+        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+    };
+
     const loadStopwatches = async () => {
         try {
             const keys = await AsyncStorage.getAllKeys();
@@ -38,11 +44,27 @@ const App = () => {
             if (keys.length == 0) {
                 createFirstStopwatch();
             } else {
+                const stopwatchArray = [];
                 for (let i = 0; i < keys.length; i++) {
                     let stopwatch = await AsyncStorage.getItem(keys[i]);
                     stopwatch = JSON.parse(stopwatch);
+                    stopwatchArray.push(stopwatch);
+                }
+
+                // Sort stopwatches by id [oldest...newest]
+                // (the newest stopwatch has the highest id)
+                stopwatchArray.sort((a, b) => {
+                    if (a.id > b.id) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
+
+                // Display stopwatches and put the newest stopwatch to the top
+                for (let i = 0; i < stopwatchArray.length; i++) {
                     setStopwatches(prevItems => {
-                        return [...prevItems, stopwatch];
+                        return [stopwatchArray[i], ...prevItems];
                     });
                 }
             }
@@ -58,7 +80,7 @@ const App = () => {
             lastRunStartTime: 0,
         };
         setStopwatches(prevItems => {
-            return [...prevItems, stopwatch];
+            return [stopwatch, ...prevItems];
         });
         saveStopwatch(stopwatch);
     };
@@ -89,10 +111,11 @@ const App = () => {
             const jsonValue = JSON.stringify(stopwatch);
             await AsyncStorage.setItem("id" + stopwatch.id, jsonValue);
             setStopwatches(prevItems => {
-                return [...prevItems, stopwatch];
+                return [stopwatch, ...prevItems];
             });
             saveNextStopwatchId(nextStopwatchId + 1);
             setShowCreateStopwatchModal(false);
+            flatListToTop();
         } catch (exception) { }
     };
 
@@ -158,6 +181,7 @@ const App = () => {
                 />
                 <Header title="Stopwatch" />
                 <FlatList
+                    ref={flatListRef}
                     data={stopwatches}
                     keyExtractor={item => item.id.toString()}
                     renderItem={({ item }) =>
