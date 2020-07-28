@@ -5,8 +5,8 @@ import {
     Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import TextButton from './TextButton';
-import PopupMenu from './PopupMenu';
+import MyButton from './MyButton';
+import EditPopupMenu from './EditPopupMenu';
 
 const Stopwatch = ({ stopwatch, onPressRename, onPressDelete }) => {
 
@@ -139,13 +139,13 @@ const Stopwatch = ({ stopwatch, onPressRename, onPressDelete }) => {
     const renderButton = () => {
         if (running) {
             return (
-                <TextButton text="STOP" color="#cc3333" onPress={stop} />
+                <MyButton text="STOP" color="#e57373" onPress={stop} />
             );
         } else {
             return (
-                <TextButton
+                <MyButton
                     text={elapsedTime === 0 ? "START" : "RESUME"}
-                    color="#33cc33"
+                    color="#81c784"
                     onPress={() => start(elapsedTime)} />
             );
         }
@@ -155,7 +155,7 @@ const Stopwatch = ({ stopwatch, onPressRename, onPressDelete }) => {
         <View style={styles.container}>
             <View style={styles.topContainer}>
                 <Text style={styles.stopwatchTitle}>{stopwatch.name}</Text>
-                <PopupMenu
+                <EditPopupMenu
                     stopwatch={stopwatch}
                     onPressReset={reset}
                     onPressRename={onPressRename}
@@ -170,24 +170,21 @@ const Stopwatch = ({ stopwatch, onPressRename, onPressDelete }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#333333",
-        padding: 10,
-        marginTop: 6,
+        backgroundColor: "#202020",
+        padding: 8,
     },
     topContainer: {
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "space-between",
     },
     stopwatchTitle: {
         color: "#ffffff",
         fontSize: 25,
-        alignSelf: "flex-start",
     },
     elapsedTimeContainer: {
         display: "flex",
         flexDirection: "row",
-        alignItems: "flex-end",
         justifyContent: "center",
         paddingTop: 15,
         paddingBottom: 15,
@@ -197,8 +194,8 @@ const styles = StyleSheet.create({
         fontSize: 35,
     },
     elapsedTimeUnit: {
-        color: "#00ff00",
-        fontSize: 25,
+        color: "#4fc3f7",
+        fontSize: 35,
     },
 });
 

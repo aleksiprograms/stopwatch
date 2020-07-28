@@ -6,7 +6,7 @@ import {
     Modal,
     TextInput,
 } from 'react-native';
-import TextButton from './TextButton';
+import MyButton from './MyButton';
 
 const NamingModal = ({
     visible,
@@ -43,16 +43,17 @@ const NamingModal = ({
                         maxLength={15}
                         defaultValue={stopwatchToEdit.name}
                         onChangeText={onNameChange}
+                        selectionColor={"#4fc3f7"}
                     />
                     <View style={styles.buttonContainer}>
-                        <TextButton
+                        <MyButton
                             text={buttonTextNegative}
-                            color="#cc3333"
+                            color="#e57373"
                             onPress={() => onPressNegative()}
                         />
-                        <TextButton
+                        <MyButton
                             text={buttonTextPositive}
-                            color="#33cc33"
+                            color="#81c784"
                             onPress={() => onPressPositive(stopwatch)}
                         />
                     </View>
@@ -67,31 +68,30 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#00000099",
     },
     modalView: {
-        backgroundColor: "#555555",
-        padding: 15,
         alignItems: "center",
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        alignItems: "center",
+        backgroundColor: "#202020",
+        borderColor: "#4fc3f7",
+        borderWidth: 3,
+        borderRadius: 12,
+        padding: 20,
     },
     title: {
         alignSelf: "flex-start",
-        fontSize: 25,
         color: "#ffffff",
+        fontSize: 25,
     },
     textinput: {
-        marginTop: 20,
-        marginBottom: 20,
-        fontSize: 25,
-        width: 330,
-        color: "#000000",
-        backgroundColor: "#eeeeee",
-        borderBottomColor: "#ff0000",
+        backgroundColor: "#353535",
+        borderBottomColor: "#4fc3f7",
         borderBottomWidth: 3,
+        color: "#ffffff",
+        fontSize: 25,
+        marginTop: 40,
+        marginBottom: 40,
+        width: 320,
     },
     buttonContainer: {
         flexDirection: "row",

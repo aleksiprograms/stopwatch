@@ -6,11 +6,11 @@ import {
     MenuTrigger,
 } from 'react-native-popup-menu';
 
-const PopupMenu = ({ stopwatch, onPressReset, onPressRename, onPressDelete }) => {
+const EditPopupMenu = ({ stopwatch, onPressReset, onPressRename, onPressDelete }) => {
     return (
         <Menu>
             <MenuTrigger text="EDIT" customStyles={triggerStyles} />
-            <MenuOptions>
+            <MenuOptions customStyles={optionsStyles}>
                 <MenuOption onSelect={() => onPressReset()} text="RESET" />
                 <MenuOption onSelect={() => onPressRename(stopwatch)} text="RENAME" />
                 <MenuOption onSelect={() => onPressDelete(stopwatch.id)} text="DELETE" />
@@ -21,24 +21,36 @@ const PopupMenu = ({ stopwatch, onPressReset, onPressRename, onPressDelete }) =>
 
 const triggerStyles = {
     triggerText: {
+        color: "#000000",
+        fontWeight: "bold",
         fontSize: 20,
-        color: "#ffffff",
     },
     triggerWrapper: {
-        backgroundColor: "#5555ff",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: "#4fc3f7",
+        borderRadius: 6,
         width: 66,
         height: 33,
-        flex: 1,
-    },
-    triggerTouchable: {
-        underlayColor: 'darkblue',
-        activeOpacity: 70,
-        style: {
-            flex: 1,
-        },
     },
 };
 
-export default PopupMenu;
+const optionsStyles = {
+    optionsContainer: {
+        backgroundColor: "#4fc3f7",
+        borderRadius: 6,
+        padding: 2,
+    },
+    optionWrapper: {
+        backgroundColor: "#202020",
+        borderRadius: 3,
+        margin: 2,
+    },
+    optionText: {
+        color: "#ffffff",
+        fontSize: 16,
+        padding: 3,
+    },
+};
+
+export default EditPopupMenu;

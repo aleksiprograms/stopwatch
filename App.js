@@ -6,10 +6,11 @@ import {
 } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import AsyncStorage from '@react-native-community/async-storage';
-import Header from './components/Header';
+import MyStatusBar from './components/MyStatusBar';
+import MyAppBar from './components/MyAppBar';
 import Stopwatch from './components/Stopwatch';
 import NamingModal from './components/NamingModal';
-import TextButton from './components/TextButton';
+import MyButton from './components/MyButton';
 
 const App = () => {
     const [stopwatches, setStopwatches] = useState([]);
@@ -179,11 +180,14 @@ const App = () => {
                     onPressPositive={renameStopwatch}
                     onPressNegative={() => setShowRenameStopwatchModal(false)}
                 />
-                <Header title="Stopwatch" />
+                <MyStatusBar />
+                <MyAppBar title="Stopwatch" />
+                <View style={{ height: 8 }} />
                 <FlatList
                     ref={flatListRef}
                     data={stopwatches}
                     keyExtractor={item => item.id.toString()}
+                    ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
                     renderItem={({ item }) =>
                         <Stopwatch
                             stopwatch={item}
@@ -192,12 +196,14 @@ const App = () => {
                         />
                     }
                 />
-                <TextButton
+                <View style={{ height: 8 }} />
+                <MyButton
                     text="CREATE STOPWATCH"
-                    color="#ff8800"
+                    color="#4fc3f7"
                     wide={true}
                     onPress={openCreateStopwatchModal}
                 />
+                <View style={{ height: 8 }} />
             </View>
         </MenuProvider>
     );
@@ -206,7 +212,7 @@ const App = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#111111",
+        backgroundColor: "#101010",
     },
 });
 

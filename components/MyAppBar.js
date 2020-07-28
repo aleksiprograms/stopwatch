@@ -5,7 +5,7 @@ import {
     Text,
 } from 'react-native';
 
-const Header = ({ title }) => {
+const MyAppBar = ({ title }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>{title}</Text>
@@ -15,13 +15,13 @@ const Header = ({ title }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#cc5555",
+        backgroundColor: "#303030",
         padding: 15,
     },
     text: {
         color: "#ffffff",
-        fontSize: 26,
+        fontSize: 25,
     },
 });
 
-export default Header;
+export default MyAppBar;

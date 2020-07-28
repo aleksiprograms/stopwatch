@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-const TextButton = ({ text, color, wide, onPress }) => {
+const MyButton = ({ text, color, wide, onPress }) => {
     return (
         <TouchableOpacity
             style={[
@@ -20,32 +20,34 @@ const TextButton = ({ text, color, wide, onPress }) => {
     );
 };
 
-TextButton.defaultProps = {
+MyButton.defaultProps = {
     text: "BUTTON",
-    color: "#000000",
+    color: "#ffffff",
     wide: false,
 };
 
 const styles = StyleSheet.create({
     button: {
-        marginStart: 10,
-        marginEnd: 10,
         alignItems: "center",
         justifyContent: "center",
         alignSelf: "center",
+        borderRadius: 6,
+        marginStart: 10,
+        marginEnd: 10,
     },
     wideStyle: {
-        height: 60,
         width: 300,
+        height: 60,
     },
     notWideStyle: {
-        height: 50,
         width: 120,
+        height: 50,
     },
     buttonText: {
-        color: "#ffffff",
+        color: "#000000",
+        fontWeight: "bold",
         fontSize: 25,
     },
 });
 
-export default TextButton;
+export default MyButton;
