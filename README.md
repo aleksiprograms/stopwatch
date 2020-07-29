@@ -11,3 +11,5 @@ A stopwatch app made with React Native.
 - create and delete stopwatches
 - multiple stopwatches can run at same time
 - stopwatches can be named and renamed
+- stopwatches are saved
+- the app can be closed and it does not have an effect on running stopwatches
